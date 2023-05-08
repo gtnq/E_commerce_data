@@ -26,23 +26,31 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
 	// find one category by its `id` value
 	// be sure to include its associated Products
-  Category.findOne({
-    where: {
-      id: req.params.id
-    },
-    attributes: [`id`, `category_name`],
-    include: [
-      {model: Product,
-      attributes: [`id`, `product_name`, `price`, `stock`, `category_id`]}
-    ]
-  }).then((data) => {
-    if(!data){
-      res.status(404).json({message: `No category found with this id`});
-      return;
-    } else {
-      res.json(data);
-    }
-  })
+	Category.findOne({
+		where: {
+			id: req.params.id,
+		},
+		attributes: [`id`, `category_name`],
+		include: [
+			{
+				model: Product,
+				attributes: [
+					`id`,
+					`product_name`,
+					`price`,
+					`stock`,
+					`category_id`,
+				],
+			},
+		],
+	}).then((data) => {
+		if (!data) {
+			res.status(404).json({ message: `No category found with this id` });
+			return;
+		} else {
+			res.json(data);
+		}
+	});
 });
 
 router.post("/", (req, res) => {
@@ -50,9 +58,7 @@ router.post("/", (req, res) => {
 	Category.create({
 		where: {
 			category_name: req.body.category_name,
-		}
-		.then((dbCategoryData) => res.json(dbCategoryData))
-		
+		}.then((dbCategoryData) => res.json(dbCategoryData)),
 	});
 });
 
@@ -61,15 +67,14 @@ router.put("/:id", (req, res) => {
 	Category.update(req.body, {
 		where: {
 			id: req.params.id,
-		}
-	})
-	.then((dbCategoryData) => {
+		},
+	}).then((dbCategoryData) => {
 		if (!dbCategoryData[0]) {
 			res.status(404).json({ message: `No category found with this id` });
 			return;
 		}
 		res.json(dbCategoryData);
-	})
+	});
 });
 
 router.delete("/:id", (req, res) => {
@@ -77,15 +82,14 @@ router.delete("/:id", (req, res) => {
 	Category.destroy({
 		where: {
 			id: req.params.id,
-		}
-	})
-	.then((dbCategoryData) => {
+		},
+	}).then((dbCategoryData) => {
 		if (!dbCategoryData) {
 			res.status(404).json({ message: `No category found with this id` });
 			return;
 		}
 		res.json(dbCategoryData);
-	})
+	});
 });
 
 module.exports = router;
